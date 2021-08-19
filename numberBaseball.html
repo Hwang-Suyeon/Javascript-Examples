@@ -1,0 +1,129 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>숫자야구</title>
+</head>
+<body>
+<form id="form">
+  <input type="text" id="input">
+  <button>확인</button>
+</form>
+<div id="logs"></div>
+<script>
+  const $input = document.querySelector('#input');
+  const $form = document.querySelector('#form');
+  const $logs = document.querySelector('#logs');
+
+  // 랜덤 숫자 4개 뽑기
+	const min = 1;
+	const max = 9;
+  let answer = new Set();
+
+	for (; answer.size < 4 ;) {
+		answer.add(Math.floor(Math.random() * max) + min);
+		console.log(answer.size);
+	}
+	answer = Array.from(answer);
+	console.log(answer);
+
+  // 함수 정의
+  function checkInput(input) {
+    if (input.length !== 4) { 
+      return alert('4자리 숫자를 입력해 주세요.');
+    }
+    if (new Set(input).size !== 4) {
+      return alert('중복되지 않게 입력해 주세요.');
+    }
+    if (tries.includes(input)) {
+      return alert('이미 시도한 값입니다.');
+    }
+    return true;
+  }
+
+  function checkHomerun(input) {
+    if (answer.join('') === input) { // [3, 1, 4, 6] -> '3146'
+      return true;
+    }
+    return false;
+  }
+
+	function countStrikeAndBall(input) {
+		let strike = 0;
+    let ball = 0;
+    /* for (let i = 0; i < answer.length; i++) {
+      let index = input.indexOf(answer[i]);
+      if (index == -1) {
+          continue;
+      }
+      if (index == i) {
+          strike++;
+      } else {
+          ball++;
+      }
+    } */
+		answer.forEach((element, i) => {
+			let index = input.indexOf(element);
+      if (index == -1) {
+          return;
+      }
+      if (index == i) {
+          strike++;
+      } else {
+          ball++;
+      }
+		})
+		return [strike, ball];
+	}
+
+	// 메인 프로세스
+	let tries = [];
+	let outCnt = 0;
+	let isEnded = false;
+
+  $form.addEventListener('submit', (event) => {
+    event.preventDefault(); // 태그의 기본 동작 막음
+    let value = event.target[0].value;
+    event.target[0].value = '';
+
+		// 프로세스 유효 검사
+		if (isEnded) {
+			alert('새로고침하여 새 게임을 시작하세요.')
+			return;
+		}
+
+		// 입력값 검사
+    if (!checkInput(value)) {
+      return;
+    }
+		tries.push(value);
+
+    // 홈런 확인
+    if (checkHomerun(value)) {
+    	$logs.textContent = '홈런!';
+			isEnded = true;
+    	return;
+
+    } else if (tries.length >= 10) {
+			$logs.textContent = `패배! 정답은 ${answer.join('')}`;
+			isEnded = true;
+    	return;
+		}
+
+    // 스트라이크 || 볼 확인
+    let [strike, ball] = countStrikeAndBall(value);
+		if (strike == 0 && ball == 0) {
+
+			if (++outCnt >= 3) {
+				$logs.textContent = `패배! 정답은 ${answer.join('')}`;
+				isEnded = true;
+    		return;
+			}
+
+			$logs.append(`${value}: 아웃`, document.createElement('br'));
+			return;
+		}
+    $logs.append(`${value}: ${strike} 스트라이크 ${ball} 볼`, document.createElement('br'));
+  });
+</script>
+</body>
+</html>
