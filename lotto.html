@@ -26,18 +26,18 @@
   const $bonus = document.querySelector('#bonus');
 
   // 당첨 숫자 뽑기
-	const min = 1;
-	const max = 45;
+  const min = 1;
+  const max = 45;
   let arr = new Set();
-	for (; arr.size < 7 ;) {
-		arr.add(Math.floor(Math.random() * max) + min);
-	}
+  for (; arr.size < 7 ;) {
+    arr.add(Math.floor(Math.random() * max) + min);
+  }
   console.log(arr);
 
-	arr = Array.from(arr);
+  arr = Array.from(arr);
   let winBalls = arr.slice(0, 6).sort((a, b) => a - b);
   let bonusBall = arr[arr.length - 1];
-	console.log(winBalls);
+  console.log(winBalls);
   console.log(bonusBall);
 
   
