@@ -1,0 +1,101 @@
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>가위바위보</title>
+  <style>
+    #computer {
+      width: 142px;
+      height: 200px;
+    }
+  </style>
+</head>
+
+<body>
+<div id="computer"></div>
+<div>
+  <button id="scissors" class="btn" value="1">가위</button>
+  <button id="rock" class="btn" value="0">바위</button>
+  <button id="paper" class="btn" value="2">보</button>
+</div>
+<div id="score">0</div>
+<script>
+  const imgUrl = './rsp.png';
+  const $computer = document.querySelector('#computer');
+  const $score = document.querySelector('#score');
+  const $rock = document.querySelector('#rock');
+  const $scissors = document.querySelector('#scissors');
+  const $paper = document.querySelector('#paper');
+
+  // 가위바위보 준비
+  const rock = $rock.value;
+  const scissors = $scissors.value;
+  const paper = $paper.value;
+  const rspX = ['-220px', '0', '-440px']; // [rock, scissors, paper]
+
+  let computerChoice = rock;
+  function changeHand() {
+    if (computerChoice == 3) { computerChoice = 0; }
+    $computer.style.background = `url(${imgUrl}) ${rspX[computerChoice++]} 0`;
+    $computer.style.backgroundSize = 'auto 200px';
+  }
+  let intervalId = setInterval(changeHand, 50);
+
+
+  // 점수 계산
+  let myScore = 0;
+  let comScore = 0;
+  function countScore(event) {
+    let myChoice = event.target.value;
+    let comChoice = computerChoice - 1;
+    console.log(myChoice);
+    console.log(comChoice);
+
+    if (myChoice < comChoice) {
+      if (myChoice == rock && comChoice == paper) {
+        comScore += 1; return '패배';
+      } 
+      myScore += 1; return '승리';
+    } 
+    
+    if (myChoice > comChoice) {
+      if (myChoice == paper && comChoice == rock) {
+        myScore += 1; return '승리';
+      }
+      comScore += 1; return '패배';
+    }
+
+    return '무승부';
+  }
+  
+  // 가위바위보 실행
+  let isClicked = false;
+  function clickButton() {
+    if (isClicked) { return; }
+    isClicked = true;
+
+    clearInterval(intervalId);
+
+    let result = countScore(event);
+    if (myScore >= 3) {
+      $score.textContent = `나의 승리 ${myScore} : ${comScore}`;
+      return;
+    } else if (comScore >= 3) {
+      $score.textContent = `컴퓨터의 승리 ${myScore} : ${comScore}`;
+      return;
+    } else {
+      $score.textContent = `${result} ${myScore} : ${comScore}`;
+    }
+
+    setTimeout(() => {
+        isClicked = false;
+        intervalId = setInterval(changeHand, 50);
+      }, 1000);
+  }
+
+  $rock.addEventListener('click', clickButton);
+  $scissors.addEventListener('click', clickButton);
+  $paper.addEventListener('click', clickButton);
+
+</script>
+</body>
+</html>
