@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>계산기</title>
+  <style>
+    *{ box-sizing: border-box; font-size: 50px; }
+    #result{ width: 654px; height: 200px; margin: 5px; text-align: right }
+    #operator{ width: 200px; height: 200px; margin: 5px; text-align: center }
+    button{ width: 200px; height: 200px; margin: 5px }
+  </style>
+</head>
+
+<!-- 계산기 버튼 구현 -->
+<body>
+  <input readonly id="operator">
+  <input readonly type="number" id="result">
+  <div class="row">
+    <button class="btnNum" id="num-7">7</button>
+    <button class="btnNum" id="num-8">8</button>
+    <button class="btnNum" id="num-9">9</button>
+    <button class="btnOpr" id="plus" value="+">+</button>
+  </div>
+  <div class="row">
+    <button class="btnNum" id="num-4">4</button>
+    <button class="btnNum" id="num-5">5</button>
+    <button class="btnNum" id="num-6">6</button>
+    <button class="btnOpr" id="minus" value="-">-</button>
+  </div>
+  <div class="row">
+    <button class="btnNum" id="num-1">1</button>
+    <button class="btnNum" id="num-2">2</button>
+    <button class="btnNum" id="num-3">3</button>
+    <button class="btnOpr" id="divide" value="/">/</button>
+  </div>
+  <div class="row">
+    <button id="clear">C</button>
+    <button class="btnNum" id="num-0">0</button>
+    <button id="calculate">=</button>
+    <button class="btnOpr" id="multiply" value="*">x</button>
+  </div>
+<script>
+  let numOne = '';
+  let operator = '';
+  let numTwo = '';
+  const $operator = document.querySelector('#operator');
+  const $result = document.querySelector('#result');
+
+	function calculate() {
+		switch (operator) {
+        case '+':
+          return Number(numOne) + Number(numTwo);
+
+        case '-':
+          return Number(numOne) - Number(numTwo);
+
+        case '*':
+          return Number(numOne) * Number(numTwo);
+
+        case '/':
+          return Number(numOne) / Number(numTwo);
+
+        default:
+          return;
+      }
+	}
+	
+  // 숫자버튼 이벤트  
+	document.querySelectorAll('.btnNum').forEach(btn => {
+		btn.addEventListener('click', (event) => {
+			if (!operator) { // numOne 입력 끝나지 않은 경우
+				numOne += event.target.textContent;
+			} else { // numOne 입력 끝난 경우
+				if (!numTwo) $result.value = '';
+				numTwo += event.target.textContent;
+			}
+			$result.value += event.target.textContent;
+		});
+	});
+  
+	// 연산버튼[+, -, *, /] 이벤트
+	document.querySelectorAll('.btnOpr').forEach(btn => {
+		btn.addEventListener('click', (event) => {
+			if (!numOne) {
+				alert('숫자를 먼저 입력하세요.');
+				return;
+				//numOne = 0; // -1 -2 계산을 위한 코드 변경
+			}
+			if (numTwo) {
+				numOne = calculate();
+				numTwo = '';
+			}
+			operator = event.target.value;
+			$operator.value = event.target.value;
+		});
+	});
+
+  // 계산버튼[=] 이벤트
+  document.querySelector('#calculate').addEventListener('click', () => {
+    if(!numTwo) {
+			alert('숫자를 먼저 입력하세요.');
+			return;
+		}
+
+		$result.value = calculate();
+		numOne = $result.value;
+    $operator.value = '';
+    operator = '';
+    numTwo = '';
+  });
+
+	// 초기화버튼[C] 이벤트
+  document.querySelector('#clear').addEventListener('click', () => {
+    numOne = '';
+    operator = '';
+    numTwo = '';
+    $operator.value = '';
+    $result.value = '';
+  });
+</script>
+</body>
