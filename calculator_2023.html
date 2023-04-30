@@ -39,6 +39,7 @@
 		<button id="calculate">=</button>
 		<button class="btnOpr" id="multiply" value="*">x</button>
 	</div>
+
 	<script>
 		let numOne = '';
 		let operator = '';
@@ -50,22 +51,19 @@
 			switch (operator) {
 				case '+':
 					return Number(numOne) + Number(numTwo);
-
 				case '-':
 					return Number(numOne) - Number(numTwo);
-
 				case '*':
 					return Number(numOne) * Number(numTwo);
-
 				case '/':
 					return Number(numOne) / Number(numTwo);
-
 				default:
 					return;
 			}
 		}
 
-		// 숫자버튼 이벤트  
+		// 숫자버튼 이벤트
+		// event.target.textContent 사용
 		document.querySelectorAll('.btnNum').forEach(btn => {
 			btn.addEventListener('click', (event) => {
 				if (!operator) { // numOne 입력 끝나지 않은 경우
@@ -79,6 +77,7 @@
 		});
 
 		// 연산버튼[+, -, *, /] 이벤트
+		// event.target.value 사용
 		document.querySelectorAll('.btnOpr').forEach(btn => {
 			btn.addEventListener('click', (event) => {
 				if (!numOne) {
@@ -100,8 +99,7 @@
 			if (!numTwo) {
 				alert('숫자를 먼저 입력하세요.');
 				return;
-			}
-
+			}		
 			$result.value = calculate();
 			numOne = $result.value;
 			$operator.value = '';
